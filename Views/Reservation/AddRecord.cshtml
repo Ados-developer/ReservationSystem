@@ -1,0 +1,288 @@
+﻿@using ReservationSystem.Util
+@using ReservationSystem.ViewModels
+@model ReservationViewModel
+@{
+    ViewData["Title"] = "Create Reservation";
+}
+
+
+<div class="text-center">
+    <h1>@ViewData["Title"]</h1>
+    <form asp-action="AddRecord" method="post">
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="CreatedAt" />
+        <input type="hidden" asp-for="ReservationItemId" />
+        <div class="row">
+            <div class="col-md-12">
+                <fieldset>
+                    <legend>Customer</legend>
+                    <div class="mb-3">
+                        <label class="form-label" asp-for="CustomerName"></label>
+                        <input class="form-control" asp-for="CustomerName" />
+                        <span asp-validation-for="CustomerName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" asp-for="CustomerEmail"></label>
+                        <input class="form-control" asp-for="CustomerEmail" />
+                        <span asp-validation-for="CustomerEmail" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" asp-for="CustomerPhone"></label>
+                        <input class="form-control" asp-for="CustomerPhone" />
+                        <span asp-validation-for="CustomerPhone" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" asp-for="Note"></label>
+                        <textarea class="form-control" asp-for="Note"></textarea>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="col-md-12">
+                <fieldset>
+                    <legend>Service</legend>
+                    <p>Please select your service</p>
+                    <div class="row" id="serviceItemContainer">
+                        <div class="col-md-12">
+                            <table class="table">
+                                <thead>
+                                    <tr class="trRow">
+                                        <th scope="col"></th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Duration(min)</th>
+                                        <th scope="col" style="padding-right:20px">Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="trRow">
+                                        <td><a id="resetService" class="icon-btn icon-btn-primary btn-delete-reader"><i class="fas fa-trash-alt"></i></a></td>
+                                        <td id="serviceItemName"></td>
+                                        <td id="serviceItemDuration"></td>
+                                        <td id="serviceItemPrice" style="padding-right:20px"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row" id="serviceItemSelect">
+                        <div class="col-md-12">
+                            <table class="table">
+                                <thead>
+                                    <tr class="trRow">
+                                        <th scope="col"></th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Duration(min)</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col" style="padding-right:20px">Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.AvailableItems != null && Model.AvailableItems.Any())
+                                    {
+                                        foreach (var item in Model.AvailableItems)
+                                        {
+                                            <tr class="service-card trRow">
+                                                <td class="card-id" data-id="@item.Id"><a class="icon-btn icon-btn-primary addItemBtn" data-id="@item.Id"><i class="fas fa-plus"></i></a></td>
+                                                <td class="card-title">@item.ItemName</td>
+                                                <td class="card-duration">@item.DurationMinutes (min)</td>
+                                                <td class="card-price">@PriceUtil.GetPriceString(item.ItemPrice)</td>
+                                                <td style="padding-right:20px">
+                                                    <button type="button"
+                                                            class="icon-btn icon-btn-primary"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#descModal-@item.Id">
+                                                        <i class="fas fa-info"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="descModal-@item.Id" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">@item.ItemName</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            @item.ItemDescription
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="5" class="text-center">No services</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="form-label" asp-for="ReservationAt"></label>
+                        <input class="form-control" asp-for="ReservationAt" readonly />
+                        <span asp-validation-for="ReservationAt" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-12 mt-4">
+                        <button type="button" id="selectDateTimeBtn" class="hero-btn hero-btn-primary">
+                            Select Date & Time
+                        </button>
+                    </div>
+                    <div id="dayNavigation" class="d-none text-center my-3">
+                        <button id="prevDayBtn" class="icon-btn icon-btn-primary"><i class="fas fa-arrow-left"></i></button>
+                        <span id="currentDayLabel"></span>
+                        <button id="nextDayBtn" class="icon-btn icon-btn-primary"><i class="fas fa-arrow-right"></i></button>
+                    </div>
+                    <div class="day-block mt-3" id="availableTimes">
+                        
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        <button type="submit" class="hero-btn hero-btn-primary">Submit</button>
+        <a class="hero-btn hero-btn-primary" asp-action="GetRecords" asp-controller="Reservation">Back</a>
+    </form>
+</div>
+
+
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const cards = document.querySelectorAll(".service-card");
+        const addItemBtn = document.getElementById("addItemBtn");
+        const hiddenInput = document.getElementById("ReservationItemId");
+        const resetServiceBtn = document.getElementById("resetService");
+        const serviceItemContainer = document.getElementById("serviceItemContainer");
+        const serviceItemName = document.getElementById("serviceItemName");
+        const serviceItemDescription = document.getElementById("serviceItemDescription");
+        const serviceItemDuration = document.getElementById("serviceItemDuration");
+        const serviceItemPrice = document.getElementById("serviceItemPrice");
+        resetServiceBtn.classList.add("d-none");
+        serviceItemContainer.classList.add("d-none");
+        const addItemButtons = document.querySelectorAll(".addItemBtn");
+        const serviceItemSelect = document.getElementById("serviceItemSelect")
+        const AvailableTimesContainer = document.getElementById("availableTimes");
+        AvailableTimesContainer.classList.add("d-none");
+        const ReservationAt = document.getElementById("ReservationAt");
+        addItemButtons.forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                e.preventDefault();
+                const card = btn.closest(".service-card");
+                const id = btn.dataset.id;
+                const name = card.querySelector(".card-title").innerText;
+                const duration = card.querySelector(".card-duration").innerText;
+                const price = card.querySelector(".card-price").innerText;
+                const confirmed = confirm(`Are you sure you want this service: ${name}?`);
+
+                if (confirmed) {
+                    hiddenInput.value = id;
+                    serviceItemContainer.classList.remove("d-none");
+                    serviceItemName.innerText = name;
+                    serviceItemDuration.innerText = duration;
+                    serviceItemPrice.innerText = price;
+                    serviceItemSelect.classList.add("d-none");
+                    resetServiceBtn.classList.remove("d-none");
+                }
+            });
+        });
+
+        resetServiceBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            AvailableTimesContainer.classList.add("d-none");
+            serviceItemSelect.classList.remove("d-none")
+            serviceItemContainer.classList.add("d-none");
+            hiddenInput.value = ""; // resetni hodnotu
+            resetServiceBtn.classList.add("d-none");
+            ReservationAt.value = ""
+        });
+        document.getElementById("selectDateTimeBtn").addEventListener("click", async () => {
+            const duration = parseInt(serviceItemDuration.innerText); // napr. 45
+            if (!hiddenInput.value || hiddenInput.value === "00000000-0000-0000-0000-000000000000") {
+                alert("Please select a service first!");
+                return; // ukončíme funkciu, fetch sa nespustí
+            }
+            if (!AvailableTimesContainer.classList.contains("d-none")) {
+                AvailableTimesContainer.classList.add("d-none");
+                return;
+            }
+            await loadAvailableTimes(duration);
+        });
+        let daysData = [];
+        let currentDayIndex = 0;
+        async function loadAvailableTimes(duration) {
+        const response = await fetch(`/api/reservationapi?duration=${duration}`);
+        const data = await response.json();
+
+        daysData = data.days;
+        currentDayIndex = 0;
+
+        if (!daysData.length) {
+            AvailableTimesContainer.innerHTML = "<p>No available times.</p>";
+            AvailableTimesContainer.classList.remove("d-none");
+            return;
+        }
+
+        document.getElementById("dayNavigation").classList.remove("d-none");
+
+        showDay(currentDayIndex);
+    }
+        function showDay(index) {
+        const day = daysData[index];
+
+        const dayLabel = document.getElementById("currentDayLabel");
+        dayLabel.textContent = day.date;
+
+        AvailableTimesContainer.innerHTML = "";
+        AvailableTimesContainer.classList.remove("d-none");
+
+        const timesDiv = document.createElement("div");
+
+        day.times.forEach(time => {
+            const btn = document.createElement("button");
+            btn.textContent = time;
+            btn.classList.add("hero-btn-secondary", "m-1");
+            btn.addEventListener("click", (e) => {
+                e.preventDefault();
+                const selectedDateTime = day.date + " " + time;
+                if (confirm(`Are you sure with this date and time: ${selectedDateTime}?`)) {
+                    ReservationAt.value = selectedDateTime;
+                    AvailableTimesContainer.classList.add("d-none");
+                    document.getElementById("dayNavigation").classList.add("d-none");
+                }
+            });
+            timesDiv.appendChild(btn);
+        });
+
+        AvailableTimesContainer.appendChild(timesDiv);
+
+        // deaktivácia šípok
+        document.getElementById("prevDayBtn").disabled = (index === 0);
+        document.getElementById("nextDayBtn").disabled = (index === daysData.length - 1);
+    }
+
+    // šípky
+    document.getElementById("prevDayBtn").addEventListener("click", (e) => {
+        e.preventDefault();
+        if (currentDayIndex > 0) {
+            currentDayIndex--;
+            showDay(currentDayIndex);
+        }
+    });
+
+    document.getElementById("nextDayBtn").addEventListener("click", (e) => {
+        e.preventDefault();
+        if (currentDayIndex < daysData.length - 1) {
+            currentDayIndex++;
+            showDay(currentDayIndex);
+        }
+    });
+});
+</script>

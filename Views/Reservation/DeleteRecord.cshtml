@@ -1,0 +1,77 @@
+﻿@using ReservationSystem.Util
+@using ReservationSystem.ViewModels
+@model ReservationViewModel
+@{
+    ViewData["Title"] = "Delete Reservation";
+}
+
+
+<div class="text-center">
+    <h1>@ViewData["Title"] </h1>
+    <form asp-action="DeleteConfirmed" method="post">
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="CreatedAt" />
+        <input type="hidden" asp-for="ReservationItemId" />
+        <div class="row">
+            <div class="col-md-12">
+                <fieldset>
+                    <legend>Customer</legend>
+                    <div class="mb-3">
+                        <label class="form-label" asp-for="CustomerName"></label>
+                        <input class="form-control" asp-for="CustomerName" readonly />
+                        <span asp-validation-for="CustomerName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" asp-for="CustomerEmail"></label>
+                        <input class="form-control" asp-for="CustomerEmail" readonly />
+                        <span asp-validation-for="CustomerEmail" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" asp-for="CustomerPhone"></label>
+                        <input class="form-control" asp-for="CustomerPhone" readonly />
+                        <span asp-validation-for="CustomerPhone" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" asp-for="Note"></label>
+                        <textarea class="form-control" asp-for="Note" readonly></textarea>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="col-md-12">
+                <fieldset>
+                    <legend>Service</legend>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table">
+                                <thead>
+                                    <tr class="trRow">
+                                        <th class="text-center" scope="col">Name</th>
+                                        <th class="text-center" scope="col">Duration(min)</th>
+                                        <th class="text-center" scope="col" style="padding-right:20px;">Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="trRow">
+                                        <td class="text-center">@Model.ReservationItemName</td>
+                                        <td class="text-center">@Model.ReservationItemDuration min</td>
+                                        <td class="text-center" style="padding-right:20px;">@Model.ReservationItemPrice</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label" asp-for="ReservationAt"></label>
+                        <input class="form-control" asp-for="ReservationAt" readonly />
+                        <span asp-validation-for="ReservationAt" class="text-danger"></span>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        <button type="submit" class="hero-btn hero-btn-primary">Delete</button>
+        <a class="hero-btn hero-btn-primary" asp-action="GetRecords" asp-controller="Reservation">Back</a>
+    </form>
+</div>
+

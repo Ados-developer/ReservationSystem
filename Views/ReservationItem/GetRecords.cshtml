@@ -1,0 +1,52 @@
+﻿@using ReservationSystem.Util
+@using ReservationSystem.ViewModels
+@model List<ReservationItemViewModel>
+@{
+    ViewData["Title"] = "Reservation Items";
+}
+
+<div class="text-center">
+    <h1>List of Reservation Items</h1>
+    
+    @if (TempData["message"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["message"]
+        </div>
+    }
+    <a class="hero-btn hero-btn-primary" asp-action="AddRecord" asp-controller="ReservationItem">Add Items</a>
+</div>
+<table class="table">
+    <colgroup>
+        <col style="width: 10%;">
+        <col style="width: 20%;">
+        <col style="width: 50%;">
+        <col style="width: 10%;">
+        <col style="width: 10%;">
+    </colgroup>
+    <thead>
+        <tr class="trRow">
+            <th scope="col" class="text-center"></th>
+            <th scope="col" class="text-left">Name</th>
+            <th scope="col" class="text-center d-none d-md-table-cell">Description</th>
+            <th scope="col" class="text-center">Duration(min)</th>
+            <th scope="col" class="text-center" style="padding-right:20px;">Price</th>
+        </tr>
+    </thead>
+    <tbody>
+            @foreach (ReservationItemViewModel item in Model)
+            {
+                <tr class="trRow">
+                    <td class="text-center">
+                        <a class="icon-btn icon-btn-primary" asp-action="EditRecord" asp-controller="ReservationItem" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a>
+                        <a class="icon-btn icon-btn-primary" asp-action="DeleteRecord" asp-controller="ReservationItem" asp-route-id="@item.Id"><i class="fas fa-trash-alt"></i></a>
+                    </td>
+                    <td class="text-left">@item.ItemName</td>
+                    <td class="text-center d-none d-md-table-cell">@item.ItemDescription</td>
+                    <td class="text-center">@item.DurationMinutes</td>
+                    <td class="text-center" style="padding-right:20px;">@PriceUtil.GetPriceString(item.ItemPrice)</td>
+                </tr>
+            }
+    </tbody>
+</table>
+

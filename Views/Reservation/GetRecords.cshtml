@@ -1,0 +1,57 @@
+﻿@using ReservationSystem.ViewModels
+@model List<ReservationViewModel>
+
+@{
+    ViewData["Title"] = "Reservations";
+}
+
+<div class="text-center">
+    <h1>List of Reservations</h1>
+    @if (TempData["message"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["message"]
+        </div>
+    }
+    <a class="hero-btn hero-btn-primary" asp-action="AddRecord" asp-controller="Reservation">New reservation</a>
+</div>
+<table class="table">
+    <colgroup>
+        <col style="width: 10%;">
+        <col style="width: 18%;">
+        <col style="width: 18%;">
+        <col style="width: 18%;">
+        <col style="width: 18%;">
+        <col style="width: 18%;">
+    </colgroup>
+    <thead>
+        <tr class="trRow">
+            <th scope="col" class="text-center"></th>
+            <th scope="col" class="text-center">Customer Name</th>
+            <th scope="col" class="text-center d-none d-md-table-cell">Customer E-mail</th>
+            <th scope="col" class="text-center d-none d-md-table-cell">Customer Phone</th>
+            <th scope="col" class="text-center">Service</th>
+            <th scope="col" class="text-center" style="padding-right:20px;">Reservation At</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ReservationViewModel reservation in Model)
+        {
+            <tr class="trRow">
+                <td class="text-center">
+                    <a class="icon-btn icon-btn-primary" asp-action="EditRecord" asp-controller="Reservation" asp-route-id="@reservation.Id"><i class="fas fa-edit"></i></a>
+                    <a class="icon-btn icon-btn-primary" asp-action="DeleteRecord" asp-controller="Reservation" asp-route-id="@reservation.Id"><i class="fas fa-trash-alt"></i></a>
+                </td>
+                <td class="text-center">@reservation.CustomerName</td>
+                <td class="text-center d-none d-md-table-cell">@reservation.CustomerEmail</td>
+                <td class="text-center d-none d-md-table-cell">@reservation.CustomerPhone</td>
+                <td class="text-center">@reservation.ReservationItemName</td>
+                <td class="text-center" style="padding-right:20px;">@reservation.ReservationAt</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+

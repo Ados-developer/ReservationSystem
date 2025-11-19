@@ -1,0 +1,56 @@
+﻿@using ReservationSystem.ViewModels
+@model SysConstViewModel
+
+@{
+    ViewData["Title"] = "System Options";
+}
+<div class="text-center">
+    <h1>@ViewData["Title"]</h1>
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Message"]
+        </div>
+    }
+    <form asp-action="Edit" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label asp-for="OpenTime" class="form-label"></label>
+            <input class="form-control" asp-for="OpenTime" placeholder="HH:mm" />
+            <span asp-validation-for="OpenTime" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="CloseTime" class="form-label"></label>
+            <input class="form-control" asp-for="CloseTime" placeholder="HH:mm" />
+            <span asp-validation-for="CloseTime" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="IntervalTime" class="form-label"></label>
+            <input class="form-control" asp-for="IntervalTime" placeholder="HH:mm" />
+            <span asp-validation-for="IntervalTime" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="DelayTime" class="form-label"></label>
+            <input class="form-control" asp-for="DelayTime" placeholder="HH:mm" />
+            <span asp-validation-for="DelayTime" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="ClosedOnDays" class="form-label"></label>
+            <input class="form-control" asp-for="ClosedOnDays" placeholder="example 25.12,01.01" />
+            <span asp-validation-for="ClosedOnDays" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="hero-btn hero-btn-primary">Save</button>
+    </form>
+</div>
+
+
+
+
+

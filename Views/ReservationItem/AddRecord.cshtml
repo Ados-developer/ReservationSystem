@@ -1,0 +1,36 @@
+﻿@using ReservationSystem.ViewModels
+@model ReservationItemViewModel
+
+@{
+    ViewData["Title"] = "Create Reservation Item";
+}
+<div class="text-center">
+    <h1>@ViewData["Title"]</h1>
+    <form asp-action="AddRecord" method="post">
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <input type="hidden" asp-for="Id" />
+        <div class="mb-3">
+            <label class="form-label" asp-for="ItemName"></label>
+            <input class="form-control" asp-for="ItemName" />
+            <span asp-validation-for="ItemName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" asp-for="ItemPrice"></label>
+            <input class="form-control" asp-for="ItemPrice" />
+            <span asp-validation-for="ItemPrice" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" asp-for="DurationMinutes"></label>
+            <input class="form-control" asp-for="DurationMinutes" />
+            <span asp-validation-for="DurationMinutes" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" asp-for="ItemDescription"></label>
+            <textarea class="form-control" asp-for="ItemDescription"></textarea>
+            <span asp-validation-for="ItemDescription" class="text-danger"></span>
+        </div>
+        <button type="submit" class="hero-btn hero-btn-primary">Submit</button>
+        <a class="hero-btn hero-btn-primary" asp-action="GetRecords" asp-controller="ReservationItem">Back</a>
+    </form>
+</div>
